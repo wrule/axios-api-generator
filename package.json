@@ -8,6 +8,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "@wrule/prober": "^0.1.1"
+    "@wrule/prober": "^0.1.1",
+    "axios": "^0.19.2"
   }
 }
