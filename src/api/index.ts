@@ -1,5 +1,7 @@
 import { Prober } from '@wrule/prober';
 import { APIType } from '../apiType';
+import { Type } from '@wrule/prober/dist/type';
+import { TypeInterface } from '@wrule/prober/dist/type/interface';
 
 export default abstract class API {
   public get APIType(): APIType {
@@ -20,6 +22,14 @@ export default abstract class API {
 
   protected get UrlSecs(): string[] {
     return this.Url.split(/\/+|\\+/);
+  }
+
+  public get InType(): Type {
+    return new TypeInterface();
+  }
+
+  public get OutType(): Type {
+    return new TypeInterface();
   }
 
   /**

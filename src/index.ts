@@ -1,7 +1,7 @@
 // import axios from 'axios';
 
 interface params {
-  params: {
+  params?: {
     a: string,
   },
   query?: {
