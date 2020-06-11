@@ -3,12 +3,18 @@
   "version": "0.0.0",
   "description": "axios-api-generator",
   "main": "dist/index.js",
+  "scripts": {
+    "dev": "node dist/index.js",
+    "watch": "tsc -w",
+    "build": "tsc"
+  },
   "repository": "https://github.com/wrule/axios-api-generator",
   "author": "鸡毛 <shihao.gu@perfma.com>",
   "license": "MIT",
   "private": false,
   "dependencies": {
     "@wrule/prober": "^0.1.1",
-    "axios": "^0.19.2"
+    "axios": "^0.19.2",
+    "path-to-regexp": "^6.1.0"
   }
 }
