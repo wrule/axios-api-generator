@@ -18,11 +18,15 @@ export default abstract class API {
     return this.url;
   }
 
+  protected get UrlSecs(): string[] {
+    return this.Url.split(/\/+|\\+/);
+  }
+
   /**
    * 适用于文件系统的文件夹路径
    */
   public get DirPath(): string {
-    return this.Url.split(/\/+|\\+/).join('/');
+    return this.UrlSecs.join('/');
   }
 
   public constructor(
