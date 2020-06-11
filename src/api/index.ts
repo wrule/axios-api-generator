@@ -1,47 +1,54 @@
 import { Prober } from '@wrule/prober';
-import { APIType } from '../apiType';
+import { APIMethod } from '../apiMethod';
 import { Type } from '@wrule/prober/dist/type';
 import { TypeInterface } from '@wrule/prober/dist/type/interface';
+import { IAPICase } from '../apiCase';
 
 export default abstract class API {
-  public get APIType(): APIType {
-    return this.apiType;
-  }
-
-  public get SrcUrl(): string {
-    return this.url;
-  }
-
-  public get SrcRsp(): any {
-    return this.rsp;
-  }
-
-  public get Url(): string {
-    return this.url;
-  }
-
-  protected get UrlSecs(): string[] {
-    return this.Url.split(/\/+|\\+/);
+  public get Method(): APIMethod {
+    return this.apiCase.method;
   }
 
   public get InType(): Type {
     return new TypeInterface();
   }
 
+  private outType: Type;
   public get OutType(): Type {
-    return new TypeInterface();
+    return this.outType;
   }
 
   /**
    * 适用于文件系统的文件夹路径
    */
-  public get DirPath(): string {
-    return this.UrlSecs.join('/');
+  // public get DirPath(): string {
+  //   return this.UrlSecs.join('/');
+  // }
+
+  public get Case(): IAPICase {
+    return this.apiCase;
+  }
+
+  private prober: Prober;
+
+
+  private get InData(): any {
+    const result: any = {};
+    if (this.apiCase.body) {
+      result.body = this.apiCase.body;
+    }
+    if (Object.keys(this.apiCase.query).length > 0) {
+      result.query = this.apiCase.query;
+    }
+    
+    return result;
   }
 
   public constructor(
-    private apiType: APIType,
-    private url: string,
-    private rsp: any,
-  ) {}
+    private apiCase: IAPICase,
+  ) {
+    this.prober = new Prober();
+    this.outType = this.prober.Do(this.apiCase.response, 'rsp');
+
+  }
 }

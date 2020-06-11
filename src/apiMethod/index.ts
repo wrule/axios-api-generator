@@ -1,7 +1,7 @@
 /**
- * 接口类型枚举，对应着7个http动词
+ * 接口方法枚举，对应着7个http动词
  */
-export enum APIType {
+export enum APIMethod {
   GET = 'get',
   POST = 'post',
   PUT = 'put',
