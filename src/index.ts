@@ -7,6 +7,6 @@ const collector = new ParamsCollector([
   '/stu/:id/update/:zone?'
 ]);
 
-const result = collector.Collect('/stu/122/update/123');
+const result = collector.Collect('/stu/122/update');
 
 console.log(result);
