@@ -1,6 +1,12 @@
-import { pathToRegexp, match, parse, compile, Key } from 'path-to-regexp';
+import { APITemp } from './apiTemp';
+import { ParamsCollector } from './paramsCollector';
 
-const url: string = '/user';
-const keys: Key[] = [];
-const a = pathToRegexp(url, keys);
-console.log(keys);
+const collector = new ParamsCollector([
+  '/users/:id',
+  '/users',
+  '/stu/:id/update/:zone?'
+]);
+
+const result = collector.Collect('/stu/122/update/123');
+
+console.log(result);
