@@ -103,6 +103,14 @@ export class API {
     }
   }
 
+  public UpdateToDir(dirPath: string): void {
+    const reqPath = path.join(dirPath, this.Path, 'req');
+    const rspPath = path.join(dirPath, this.Path, 'rsp');
+    console.log(reqPath);
+    this.prober.Update(this.inParams, 'req', reqPath);
+    this.prober.Update(this.apiCase.response, 'rsp', rspPath);
+  }
+
   /**
    * 构造函数
    * @param apiCase API用例

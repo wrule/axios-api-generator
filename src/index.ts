@@ -4,6 +4,7 @@ import { pathToRegexp, match, parse, compile, Key, MatchFunction } from 'path-to
 import { IAPICase } from './apiCase';
 import { APIMethod } from './apiMethod';
 import { API } from './api';
+import path from 'path';
 
 const collector = new ParamsCollector([
   '/api/user/new',
@@ -34,4 +35,5 @@ const apiCase: IAPICase = {
 const api = new API(apiCase, collector);
 
 console.log(api.Path);
+api.UpdateToDir(path.join(__dirname, '..', 'src', 'output'));
 
