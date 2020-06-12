@@ -1,11 +1,13 @@
 import { Prober } from '@wrule/prober';
 import { APIMethod } from '../apiMethod';
-import { Type } from '@wrule/prober/dist/type';
 import { IAPICase } from '../apiCase';
 import { ParamsCollector } from '../paramsCollector';
 import { APITemp } from '../apiTemp';
 import path from 'path';
 
+/**
+ * API类，根据用例构建，代表一个聚类后的API
+ */
 export class API {
   /**
    * API方法
@@ -21,8 +23,6 @@ export class API {
     return this.apiCase;
   }
 
-  private prober: Prober;
-
   private inParams: any = {};
 
   /**
@@ -32,15 +32,6 @@ export class API {
     return this.inParams;
   }
 
-  private inParamsType: Type;
-
-  /**
-   * 入参类型
-   */
-  public get InParamsType(): Type {
-    return this.inParamsType;
-  }
-
   private temp: APITemp | null = null;
 
   /**
@@ -48,15 +39,6 @@ export class API {
    */
   public get Temp(): APITemp | null {
     return this.temp;
-  }
-
-  private outParamsType: Type;
-
-  /**
-   * 出参类型
-   */
-  public get OutParamsType(): Type {
-    return this.outParamsType;
   }
 
   /**
@@ -103,10 +85,13 @@ export class API {
     }
   }
 
-  public UpdateToDir(dirPath: string): void {
+  /**
+   * 将接口代码更新到指定目录
+   * @param dirPath 目录
+   */
+  public Update(dirPath: string): void {
     const reqPath = path.join(dirPath, this.Path, 'req');
     const rspPath = path.join(dirPath, this.Path, 'rsp');
-    console.log(reqPath);
     this.prober.Update(this.inParams, 'req', reqPath);
     this.prober.Update(this.apiCase.response, 'rsp', rspPath);
   }
@@ -115,14 +100,13 @@ export class API {
    * 构造函数
    * @param apiCase API用例
    * @param collector 注入的参数采集器
+   * @param prober 注入的类型推导器
    */
   public constructor(
     private apiCase: IAPICase,
     private collector: ParamsCollector,
+    private prober: Prober,
   ) {
     this.initInParamsTemp();
-    this.prober = new Prober();
-    this.inParamsType = this.prober.Do(this.inParams, 'req');
-    this.outParamsType = this.prober.Do(this.apiCase.response, 'rsp');
   }
 }

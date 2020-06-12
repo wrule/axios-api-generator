@@ -1,10 +1,9 @@
-import { APITemp } from './apiTemp';
+import path from 'path';
 import { ParamsCollector } from './paramsCollector';
-import { pathToRegexp, match, parse, compile, Key, MatchFunction } from 'path-to-regexp';
 import { IAPICase } from './apiCase';
 import { APIMethod } from './apiMethod';
 import { API } from './api';
-import path from 'path';
+import { Prober } from '@wrule/prober';
 
 const collector = new ParamsCollector([
   '/api/user/new',
@@ -27,12 +26,14 @@ const apiCase: IAPICase = {
     object: {
       id: '28383276',
       name: 'jimao',
+      nums: [1, 2, 3, 4, null],
     },
     message: '操作成功',
   },
 };
 
-const api = new API(apiCase, collector);
+const prober = new Prober();
+const api = new API(apiCase, collector, prober);
 
 console.log(api.Path);
-api.UpdateToDir(path.join(__dirname, '..', 'src', 'output'));
+api.Update(path.join(__dirname, '..', 'src', 'output'));
