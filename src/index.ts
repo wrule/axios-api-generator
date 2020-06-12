@@ -13,7 +13,7 @@ const collector = new ParamsCollector([
 ]);
 
 const apiCase: IAPICase = {
-  path: '/api/user/2334/update',
+  path: '/api/user/2222',
   method: APIMethod.POST,
   body: {
     name: 'gushi',
