@@ -17,6 +17,13 @@ export class API {
   }
 
   /**
+   * API请求原始路径
+   */
+  public get SrcPath(): string {
+    return this.apiCase.path;
+  }
+
+  /**
    * 源API用例
    */
   public get Case(): IAPICase {
@@ -26,10 +33,17 @@ export class API {
   private inParams: any = {};
 
   /**
-   * 整理后的入参数据
+   * 入参数据
    */
   public get InParams(): any {
     return this.inParams;
+  }
+
+  /**
+   * 出参数数据
+   */
+  public get OutParams(): any {
+    return this.apiCase.response;
   }
 
   private temp: APITemp | null = null;
@@ -42,13 +56,20 @@ export class API {
   }
 
   /**
+   * 是否为不依赖模板的自由接口
+   */
+  public get IsFree(): boolean {
+    return this.temp ? false : true;
+  }
+
+  /**
    * 经过聚类后的API路径，可直接用于文件系统
    */
   public get Path(): string {
-    if (this.Temp) {
-      return this.normalizationPath(this.Temp.TokenNames.join('/'));
-    } else {
+    if (this.IsFree) {
       return this.normalizationPath(this.apiCase.path);
+    } else {
+      return this.normalizationPath((this.Temp as APITemp).TokenNames.join('/'));
     }
   }
 
