@@ -5,9 +5,9 @@ import { APIMethod } from '../apiMethod';
  */
 export interface IAPICase {
   /**
-   * 实际请求地址
+   * 实际请求路径
    */
-  url: string,
+  path: string,
   /**
    * http请求方法
    */
