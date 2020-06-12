@@ -36,4 +36,3 @@ const api = new API(apiCase, collector);
 
 console.log(api.Path);
 api.UpdateToDir(path.join(__dirname, '..', 'src', 'output'));
-
