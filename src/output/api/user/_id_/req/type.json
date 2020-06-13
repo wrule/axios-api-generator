@@ -1,0 +1,64 @@
+{
+  "kind": "_interface",
+  "types": [],
+  "intfName": "req",
+  "intfMbrs": [
+    [
+      "body",
+      {
+        "kind": "_interface",
+        "types": [],
+        "intfName": "body",
+        "intfMbrs": [
+          [
+            "name",
+            {
+              "kind": "string",
+              "types": [],
+              "intfName": "",
+              "intfMbrs": []
+            }
+          ]
+        ]
+      }
+    ],
+    [
+      "query",
+      {
+        "kind": "_interface",
+        "types": [],
+        "intfName": "query",
+        "intfMbrs": [
+          [
+            "onlyMe",
+            {
+              "kind": "boolean",
+              "types": [],
+              "intfName": "",
+              "intfMbrs": []
+            }
+          ]
+        ]
+      }
+    ],
+    [
+      "params",
+      {
+        "kind": "_interface",
+        "types": [],
+        "intfName": "params",
+        "intfMbrs": [
+          [
+            "id",
+            {
+              "kind": "string",
+              "types": [],
+              "intfName": "",
+              "intfMbrs": []
+            }
+          ]
+        ]
+      }
+    ]
+  ]
+}
