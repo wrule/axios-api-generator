@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Prober } from '@wrule/prober';
 import { API } from '../api';
+import { APIMethod } from '../apiMethod';
 import { Type } from '@wrule/prober/dist/type';
 import { TypeKind } from '@wrule/prober/dist/typeKind';
 import { TypeInterface } from '@wrule/prober/dist/type/interface';
@@ -10,7 +11,12 @@ import { TypeInterface } from '@wrule/prober/dist/type/interface';
  * API接口生成器
  */
 export class APIGenerator {
-
+  /**
+   * 判断API是否需要运行时路径编译
+   * @param api API
+   * @param inType 入参类型
+   * @returns 逻辑值，是否需要
+   */
   private isNeedCompile(api: API, inType: Type): boolean {
     let need = false;
     if (!api.IsFree) {
@@ -28,36 +34,73 @@ export class APIGenerator {
     return need;
   }
 
+  /**
+   * 根据API类型获取两种不同的参数列表代码
+   * @param api API
+   * @returns 参数列表代码
+   */
+  private reqArgs(api: API): string {
+    if (
+      api.Method === APIMethod.POST ||
+      api.Method === APIMethod.PUT ||
+      api.Method === APIMethod.PATCH
+    ) {
+      return `(reqPath, req.body, { params: req.query })`;
+    } else {
+      return `(reqPath, { params: req.query, data: req.body })`;
+    }
+  }
 
+  /**
+   * 获取API定义代码
+   * @param api API
+   * @param inType 入参类型
+   * @param outType 出参类型
+   * @returns API接口定义代码
+   */
   private getAPIIndexCode(
     api: API,
     inType: Type,
     outType: Type,
   ): string {
     let needCompile = this.isNeedCompile(api, inType);
+    const imports: string[] = [];
+    imports.push(...(true ? [`import axios from 'axios';`] : []));
+    imports.push(...(needCompile ? [`import { compile } from 'path-to-regexp';`] : []));
+    imports.push(...(inType.Kind === TypeKind.Interface ? [`import { ${inType.TypeDesc} } from './req';`] : []));
+    imports.push(...(inType.Kind !== TypeKind.Interface ? inType.DepIntfTypes.map((intfType) => `import { ${intfType.TypeDesc} } from './req/${intfType.IntfFullName}';`) : []));
+    imports.push(...(outType.Kind === TypeKind.Interface ? [`import { ${outType.TypeDesc} } from './rsp';`] : []));
+    imports.push(...(outType.Kind !== TypeKind.Interface ? outType.DepIntfTypes.map((intfType) => `import { ${intfType.TypeDesc} } from './rsp/${intfType.IntfFullName}';`) : []));
+    imports.push(...(needCompile ? [`const compileFunc = compile('${api.Temp?.TempStr}');`] : []));
+
     return `
-import axios from 'axios';
-${needCompile ? `import { compile } from 'path-to-regexp';` : ''}
-${inType.Kind === TypeKind.Interface ? `import { ${inType.TypeDesc} } from './req';` : ''}
-${inType.DepIntfTypes.map((intfType) => `import { ${intfType.TypeDesc} } from './req/${intfType.IntfFullName}';`).join('\r\n')}
-${outType.Kind === TypeKind.Interface ? `import { ${outType.TypeDesc} } from './req';` : ''}
-${outType.DepIntfTypes.map((intfType) => `import { ${intfType.TypeDesc} } from './req/${intfType.IntfFullName}';`).join('\r\n')}
+${imports.join('\r\n')}
 
-${needCompile ? `const compileFunc = compile('${api.Temp?.Temp}');` : ''}
-
-export const someApi = async (${''}): Promise<${outType.TypeDesc}> => {
-}
-`;
+export default async function api(req: ${inType.TypeDesc}): Promise<${outType.TypeDesc}> {
+  const reqPath = ${needCompile ? 'compileFunc(req.params)' : api.SrcPath};
+  return (await axios.${api.Method}${this.reqArgs(api)}) as ${outType.TypeDesc};
+}`.trim() + '\r\n';
   }
 
+  /**
+   * 向指定路径写入API定义代码
+   * @param dirPath 路径
+   * @param api API
+   * @param inType 入参类型
+   * @param outType 出参类型
+   */
   private writeAPIIndex(
     dirPath: string,
     api: API,
     inType: Type,
     outType: Type,
   ): void {
+    const dstPath = path.join(dirPath, api.Path);
+    if (!fs.existsSync(dstPath)) {
+      fs.mkdirSync(dstPath, { recursive: true });
+    }
     fs.writeFileSync(
-      path.join(dirPath, api.Path),
+      path.join(dstPath, 'index.ts'),
       this.getAPIIndexCode(api, inType, outType),
       'utf8',
     );
@@ -95,8 +138,13 @@ export const someApi = async (${''}): Promise<${outType.TypeDesc}> => {
   ): void {
     const inType = this.updateParams(api, dirPath, api.InParams, 'req');
     const outType = this.updateParams(api, dirPath, api.OutParams, 'rsp');
+    this.writeAPIIndex(dirPath, api, inType, outType);
   }
 
+  /**
+   * 构造函数
+   * @param prober 注入的类型探测器对象
+   */
   public constructor(
     private prober: Prober,
   ) {}

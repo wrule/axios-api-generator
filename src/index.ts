@@ -4,6 +4,7 @@ import { IAPICase } from './apiCase';
 import { APIMethod } from './apiMethod';
 import { API } from './api';
 import { Prober } from '@wrule/prober';
+import { APIGenerator } from './apiGenerator';
 
 const collector = new ParamsCollector([
   '/api/user/new',
@@ -35,5 +36,5 @@ const apiCase: IAPICase = {
 const prober = new Prober();
 const api = new API(apiCase, collector, prober);
 
-console.log(api.Path);
-api.Update(path.join(__dirname, '..', 'src', 'output'));
+const gen = new APIGenerator(prober);
+gen.Update(api, path.join(__dirname, '..', 'src', 'output'));

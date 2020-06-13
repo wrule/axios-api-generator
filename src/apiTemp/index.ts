@@ -7,7 +7,7 @@ export class APITemp {
   /**
    * 原始传入的模板字符串
    */
-  public get Temp(): string {
+  public get TempStr(): string {
     return this.temp;
   }
 
