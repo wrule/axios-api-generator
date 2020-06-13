@@ -1,9 +1,7 @@
-import { Prober } from '@wrule/prober';
 import { APIMethod } from '../apiMethod';
 import { IAPICase } from '../apiCase';
 import { ParamsCollector } from '../paramsCollector';
 import { APITemp } from '../apiTemp';
-import path from 'path';
 
 /**
  * API类，根据用例构建，代表一个聚类后的API
@@ -91,30 +89,19 @@ export class API {
     if (this.apiCase.body !== undefined) {
       this.inParams.body = this.apiCase.body;
     }
-    if (Object.keys(this.apiCase.query).length > 0) {
+    if (Object.keys(this.apiCase.query || {}).length > 0) {
       this.inParams.query = this.apiCase.query;
     }
     const result = this.collector.Collect(this.apiCase.path);
     if (result) {
-      if (Object.keys(result.params).length > 0) {
+      if (Object.keys(result.params || {}).length > 0) {
         this.inParams.params = result.params;
       }
       this.temp = result.temp;
     }
-    if (Object.keys(this.inParams).length < 1) {
+    if (Object.keys(this.inParams || {}).length < 1) {
       this.inParams = undefined;
     }
-  }
-
-  /**
-   * 将接口代码更新到指定目录
-   * @param dirPath 目录
-   */
-  public Update(dirPath: string): void {
-    const reqPath = path.join(dirPath, this.Path, 'req');
-    const rspPath = path.join(dirPath, this.Path, 'rsp');
-    this.prober.Update(this.inParams, 'req', reqPath);
-    this.prober.Update(this.apiCase.response, 'rsp', rspPath);
   }
 
   /**
@@ -126,7 +113,6 @@ export class API {
   public constructor(
     private apiCase: IAPICase,
     private collector: ParamsCollector,
-    private prober: Prober,
   ) {
     this.initInParamsTemp();
   }

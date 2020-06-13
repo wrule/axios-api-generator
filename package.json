@@ -4,7 +4,7 @@
   "description": "axios-api-generator",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "node dist/index.js",
+    "dev": "node test/index.js",
     "watch": "tsc -w",
     "build": "tsc"
   },

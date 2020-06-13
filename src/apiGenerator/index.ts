@@ -35,19 +35,23 @@ export class APIGenerator {
   }
 
   /**
-   * 根据API类型获取两种不同的参数列表代码
+   * 根据API方法类型和入参类型获取不同的参数列表代码
    * @param api API
    * @returns 参数列表代码
    */
-  private reqArgs(api: API): string {
-    if (
-      api.Method === APIMethod.POST ||
-      api.Method === APIMethod.PUT ||
-      api.Method === APIMethod.PATCH
-    ) {
-      return `(reqPath, req.body, { params: req.query })`;
+  private reqArgs(api: API, inType: Type): string {
+    if (inType.Kind === TypeKind.Interface) {
+      if (
+        api.Method === APIMethod.POST ||
+        api.Method === APIMethod.PUT ||
+        api.Method === APIMethod.PATCH
+      ) {
+        return `(reqPath, (req as any).body, { params: (req as any).query })`;
+      } else {
+        return `(reqPath, { params: (req as any).query, data: (req as any).body })`;
+      }
     } else {
-      return `(reqPath, { params: req.query, data: req.body })`;
+      return '(reqPath)';
     }
   }
 
@@ -76,9 +80,9 @@ export class APIGenerator {
     return `
 ${imports.join('\r\n')}
 
-export default async function api(req: ${inType.TypeDesc}): Promise<${outType.TypeDesc}> {
-  const reqPath = ${needCompile ? 'compileFunc(req.params)' : api.SrcPath};
-  return (await axios.${api.Method}${this.reqArgs(api)}) as ${outType.TypeDesc};
+export default async function api(${inType.Kind === TypeKind.Interface ? `req: ${inType.TypeDesc}` : ''}): Promise<${outType.TypeDesc}> {
+  const reqPath = ${needCompile ? 'compileFunc(req.params)' : `'${api.SrcPath}'`};
+  return (await axios.${api.Method}${this.reqArgs(api, inType)}) as ${outType.TypeDesc};
 }`.trim() + '\r\n';
   }
 

@@ -1,40 +1,6 @@
-import path from 'path';
-import { ParamsCollector } from './paramsCollector';
-import { IAPICase } from './apiCase';
-import { APIMethod } from './apiMethod';
-import { API } from './api';
-import { Prober } from '@wrule/prober';
-import { APIGenerator } from './apiGenerator';
-
-const collector = new ParamsCollector([
-  '/api/user/new',
-  '/api/user/delete',
-  '/api/user/:id',
-  '/api/user/:id/update',
-]);
-
-const apiCase: IAPICase = {
-  path: '/api/user/2222',
-  method: APIMethod.POST,
-  body: {
-    name: 'gushi',
-  },
-  query: {
-    onlyMe: true,
-  },
-  response: {
-    success: true,
-    object: {
-      id: '28383276',
-      name: 'jimao',
-      nums: [1, 2, 3, 4, null],
-    },
-    message: '操作成功',
-  },
-};
-
-const prober = new Prober();
-const api = new API(apiCase, collector, prober);
-
-const gen = new APIGenerator(prober);
-gen.Update(api, path.join(__dirname, '..', 'src', 'output'));
+export { ParamsCollector } from './paramsCollector';
+export { IAPICase } from './apiCase';
+export { APIMethod } from './apiMethod';
+export { API } from './api';
+export { Prober } from '@wrule/prober';
+export { APIGenerator } from './apiGenerator';
