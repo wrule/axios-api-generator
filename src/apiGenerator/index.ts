@@ -63,21 +63,38 @@ export const someApi = async (${''}): Promise<${outType.TypeDesc}> => {
     );
   }
 
+  /**
+   * 更新API的参数到指定路径
+   * @param api API
+   * @param dirPath 路径
+   * @param params 参数
+   * @param desc 参数描述
+   * @returns 更新后的参数类型
+   */
+  private updateParams(
+    api: API,
+    dirPath: string,
+    params: any,
+    desc: string,
+  ): Type {
+    return this.prober.Update(
+      params,
+      desc,
+      path.join(dirPath, api.Path, desc),
+    );
+  }
+
+  /**
+   * 更新API到指定路径
+   * @param api API
+   * @param dirPath 路径
+   */
   public Update(
     api: API,
     dirPath: string,
   ): void {
-    const inType = this.prober.Update(
-      api.InParams,
-      'req',
-      path.join(dirPath, api.Path, 'req'),
-    );
-    const outType = this.prober.Update(
-      api.OutParams,
-      'rsp',
-      path.join(dirPath, api.Path, 'req'),
-    );
-    this.writeAPIIndex(dirPath, api, inType, outType);
+    const inType = this.updateParams(api, dirPath, api.InParams, 'req');
+    const outType = this.updateParams(api, dirPath, api.OutParams, 'rsp');
   }
 
   public constructor(
