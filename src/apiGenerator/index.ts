@@ -69,7 +69,7 @@ export class APIGenerator {
   ): string {
     let needCompile = this.isNeedCompile(api, inType);
     const imports: string[] = [];
-    imports.push(...(true ? [`import axios from 'axios';`] : []));
+    imports.push(...(true ? [this.httpCode] : []));
     imports.push(...(needCompile ? [`import { compile } from 'path-to-regexp';`] : []));
     imports.push(...(inType.Kind === TypeKind.Interface ? [`import { ${inType.TypeDesc} } from './req';`] : []));
     imports.push(...(inType.Kind !== TypeKind.Interface ? inType.DepIntfTypes.map((intfType) => `import { ${intfType.TypeDesc} } from './req/${intfType.IntfFullName}';`) : []));
@@ -82,7 +82,7 @@ ${imports.join('\r\n')}
 
 export default async function api(${inType.Kind === TypeKind.Interface ? `req: ${inType.TypeDesc}` : ''}): Promise<${outType.TypeDesc}> {
   const reqPath = ${needCompile ? 'compileFunc(req.params)' : `'${api.SrcPath}'`};
-  return (await axios.${api.Method}${this.reqArgs(api, inType)}) as ${outType.TypeDesc};
+  return (await http.${api.Method}${this.reqArgs(api, inType)}) as ${outType.TypeDesc};
 }`.trim() + '\r\n';
   }
 
@@ -150,6 +150,7 @@ export default async function api(${inType.Kind === TypeKind.Interface ? `req: $
    * @param prober 注入的类型探测器对象
    */
   public constructor(
+    private httpCode: string,
     private prober: Prober,
   ) {}
 }

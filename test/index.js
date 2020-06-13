@@ -16,7 +16,7 @@ const api = new API({
 
 const prober = new Prober();
 
-const gen = new APIGenerator(prober);
+const gen = new APIGenerator(`import http from './http';`, prober);
 
 gen.Update(api, path.join(__dirname, '..', 'src', 'output'));
 
