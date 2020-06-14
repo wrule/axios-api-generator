@@ -72,15 +72,17 @@ export class APIGenerator {
     imports.push(...(true ? [this.httpCode] : []));
     imports.push(...(needCompile ? [`import { compile } from 'path-to-regexp';`] : []));
     imports.push(...(inType.Kind === TypeKind.Interface ? [`import { ${inType.TypeDesc} } from './req';`] : []));
+    imports.push(...(inType.Kind === TypeKind.Interface ? [`export { ${inType.TypeDesc} as IReq } from './req';`] : []));
     imports.push(...(inType.Kind !== TypeKind.Interface ? inType.DepIntfTypes.map((intfType) => `import { ${intfType.TypeDesc} } from './req/${intfType.IntfFullName}';`) : []));
     imports.push(...(outType.Kind === TypeKind.Interface ? [`import { ${outType.TypeDesc} } from './rsp';`] : []));
+    imports.push(...(outType.Kind === TypeKind.Interface ? [`export { ${outType.TypeDesc} as IRsp } from './rsp';`] : []));
     imports.push(...(outType.Kind !== TypeKind.Interface ? outType.DepIntfTypes.map((intfType) => `import { ${intfType.TypeDesc} } from './rsp/${intfType.IntfFullName}';`) : []));
     imports.push(...(needCompile ? [`const compileFunc = compile('${api.Temp?.TempStr}');`] : []));
 
     return `
 ${imports.join('\r\n')}
 
-export default async function api(${inType.Kind === TypeKind.Interface ? `req: ${inType.TypeDesc}` : ''}): Promise<${outType.TypeDesc}> {
+export async function Call(${inType.Kind === TypeKind.Interface ? `req: ${inType.TypeDesc}` : ''}): Promise<${outType.TypeDesc}> {
   const reqPath = ${needCompile ? 'compileFunc(req.params)' : `'${api.SrcPath}'`};
   return (await http.${api.Method}${this.reqArgs(api, inType)}) as any;
 }`.trim() + '\r\n';
