@@ -1,6 +1,6 @@
 {
   "name": "axios-api-generator",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "axios-api-generator",
   "main": "dist/index.js",
   "scripts": {
