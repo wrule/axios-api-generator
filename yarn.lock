@@ -19,10 +19,10 @@
   resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-14.0.13.tgz?cache=0&sync_timestamp=1591735025911&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-14.0.13.tgz#ee1128e881b874c371374c1f72201893616417c9"
   integrity sha1-7hEo6IG4dMNxN0wfciAYk2FkF8k=
 
-"@wrule/prober@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.npm.taobao.org/@wrule/prober/download/@wrule/prober-0.1.1.tgz#a32687b336636f321ece458e5349558b4c64def4"
-  integrity sha1-oyaHszZjbzIezkWOU0lVi0xk3vQ=
+"@wrule/prober@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.npm.taobao.org/@wrule/prober/download/@wrule/prober-0.1.4.tgz#b4ec510847379c0c70f8511861028fa7f14f5483"
+  integrity sha1-tOxRCEc3nAxw+FEYYQKPp/FPVIM=
   dependencies:
     "@types/hasha" "^3.0.1"
     "@types/lodash" "^4.14.152"

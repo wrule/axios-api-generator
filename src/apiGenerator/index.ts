@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { Prober } from '@wrule/prober';
+import { Prober, ICodeOptions } from '@wrule/prober';
 import { API } from '../api';
 import { APIMethod } from '../apiMethod';
 import { Type } from '@wrule/prober/dist/type';
@@ -125,11 +125,13 @@ export async function Call(${inType.Kind === TypeKind.Interface ? `req: ${inType
     dirPath: string,
     params: any,
     desc: string,
+    options: ICodeOptions,
   ): Type {
     return this.prober.Update(
       params,
       desc,
       path.join(dirPath, api.Path, desc),
+      options,
     );
   }
 
@@ -142,8 +144,14 @@ export async function Call(${inType.Kind === TypeKind.Interface ? `req: ${inType
     api: API,
     dirPath: string,
   ): void {
-    const inType = this.updateParams(api, dirPath, api.InParams, 'req');
-    const outType = this.updateParams(api, dirPath, api.OutParams, 'rsp');
+    const inType = this.updateParams(api, dirPath, api.InParams, 'req', {
+      mbrOmit: true,
+      anyMbr: true,
+    });
+    const outType = this.updateParams(api, dirPath, api.OutParams, 'rsp', {
+      mbrOmit: false,
+      anyMbr: true,
+    });
     this.writeAPIIndex(dirPath, api, inType, outType);
   }
 
