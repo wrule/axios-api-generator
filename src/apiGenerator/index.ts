@@ -73,9 +73,11 @@ export class APIGenerator {
     imports.push(...(needCompile ? [`import { compile } from 'path-to-regexp';`] : []));
     imports.push(...(inType.Kind === TypeKind.Interface ? [`import { ${inType.TypeDesc} } from './req';`] : []));
     imports.push(...(inType.Kind === TypeKind.Interface ? [`export { ${inType.TypeDesc} as IReq } from './req';`] : []));
+    imports.push(...(inType.Kind === TypeKind.Interface ? [`export const Req: ${inType.TypeDesc} = {} as ${inType.TypeDesc};`] : []));
     imports.push(...(inType.Kind !== TypeKind.Interface ? inType.DepIntfTypes.map((intfType) => `import { ${intfType.TypeDesc} } from './req/${intfType.IntfFullName}';`) : []));
     imports.push(...(outType.Kind === TypeKind.Interface ? [`import { ${outType.TypeDesc} } from './rsp';`] : []));
     imports.push(...(outType.Kind === TypeKind.Interface ? [`export { ${outType.TypeDesc} as IRsp } from './rsp';`] : []));
+    imports.push(...(outType.Kind === TypeKind.Interface ? [`export const Rsp: ${outType.TypeDesc} = {} as ${outType.TypeDesc};`] : []));
     imports.push(...(outType.Kind !== TypeKind.Interface ? outType.DepIntfTypes.map((intfType) => `import { ${intfType.TypeDesc} } from './rsp/${intfType.IntfFullName}';`) : []));
     imports.push(...(needCompile ? [`const compileFunc = compile('${api.Temp?.TempStr}');`] : []));
 
