@@ -13,7 +13,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "@wrule/prober": "^0.1.4",
+    "@wrule/prober": "^0.1.8",
     "axios": "^0.19.2",
     "path-to-regexp": "^6.1.0"
   }
